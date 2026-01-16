@@ -1,0 +1,113 @@
+---
+title: Arachnophobia Power analysis
+format:
+  html:
+    toc: true
+    code-tools: true
+    code-line-numbers: true
+    code-copy: true
+    code-block-border-left: true
+  typst:
+    toc: true
+bibliography: references.bib
+lightbox: true
+---
+
+:::{.callout-note}
+This example is drawn from The Babraham Institute's Statistical Analysis using R course [@carrStatisticalAnalysisUsing2025].
+:::
+
+# Packages
+
+```{r packages}
+suppressPackageStartupMessages({
+	library(dplyr)
+	library(readr)
+	library(ggplot2)
+	library(tidyr)
+	library(gt)
+})
+```
+
+
+Based on our preliminary data how many participants do we need to test if exposure to a real tarantula or pictures of that tarantula results in a more anxiety in arachnophobes?
+
+# Data
+
+```{r data}
+spider_anxiety_data <- read_csv("data/spider-data.csv", col_types = "ffi")
+spider_anxiety_data %>% gt()
+```
+
+In our data each participant has an anxiety score for each exposure,
+so our experiment has a paired design.
+
+# Exploratory Visualisation
+
+```{r exploratoryVisualisation}
+spider_anxiety_data %>%
+	ggplot(aes(Group, Scores)) +
+		geom_line(aes(group = Participant)) +
+		geom_point(aes(colour = Participant), size = 3) +
+		labs(
+			title = "Anxiety Score by Exposure Type",
+			x = "Exposure"
+		) +
+		theme_minimal()
+```
+
+# Summary Statistics
+
+```{r summaryStats}
+spider_anxiety_summary_stats <- spider_anxiety_data %>%
+	group_by(Group) %>%
+	summarise(mean=mean(Scores), sd=sd(Scores))
+
+spider_anxiety_summary_stats %>% gt()
+```
+
+# Power Analysis
+
+To perform a power analysis on pair data we need the differences between the groups.
+
+```{r powerAnalysisDifferences}
+spider_anxiety_summary_differences <- spider_anxiety_data %>%
+  pivot_wider(names_from = Group, values_from = Scores) %>%
+  mutate(difference = Picture - Real) %>%
+  summarise(mean = mean(difference), sd = sd(difference))
+
+spider_anxiety_summary_differences %>% gt() 
+```
+
+We will be using a simple t-test to analyses this data.
+
+```{r powerAnalysis}
+significance_threshold <- 0.05
+power_level <- 0.8
+t_test_type <- "paired"
+t_test_directionality <- "two.sided"
+
+spider_anxiety_t_test_power <- power.t.test(
+	delta = spider_anxiety_summary_differences$mean,
+	sd = spider_anxiety_summary_differences$sd,
+	sig.level = significance_threshold,
+	power = power_level,
+	type = t_test_type,
+	alternative = t_test_directionality 
+)
+
+spider_anxiety_t_test_power 
+```
+
+We are looking for a power of `r power_level * 100`% at a p<`r significance_threshold` significance threshold.
+Based on this power calculation we therefore need `r ceiling(spider_anxiety_t_test_power$n)` participants to achieve the desired power.
+
+# Session Info
+
+```{r sessionInfo}
+sessionInfo()
+```
+
+# References
+
+
