@@ -124,7 +124,7 @@ The other emphasis is on making the work 'verifiable', exposing the complete ste
 		- [ ] Contains instructions with sufficient detail for someone else to re-run the analysis
 		- [ ] What is the name or title of the project for which this code is record?
 		- [ ] Why did you peform this analysis?
-		- [ ] What problem does it address and how?
+		- [x] What problem does it address and how?
 		- [ ] How do I set up an environment to re-run it? (with example)
 		- [ ] What inputs do I need?
 		- [ ] What outputs should I expect?
