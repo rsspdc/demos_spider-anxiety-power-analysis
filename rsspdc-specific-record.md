@@ -123,7 +123,7 @@ The other emphasis is on making the work 'verifiable', exposing the complete ste
 		- [x] Provides a description of the project structure so that the user knows which directories to find things in, possibly including a visual representation of the structure
 		- [ ] Contains instructions with sufficient detail for someone else to re-run the analysis
 		- [ ] What is the name or title of the project for which this code is record?
-		- [ ] Why did you peform this analysis?
+		- [x] Why did you peform this analysis?
 		- [x] What problem does it address and how?
 		- [ ] How do I set up an environment to re-run it? (with example)
 		- [ ] What inputs do I need?
