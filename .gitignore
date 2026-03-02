@@ -1,4 +1,5 @@
 **_files
+**_site
 **.html
 .direnv
 .Rproj.user
@@ -7,3 +8,5 @@
 .httr-oauth
 .DS_Store
 .quarto
+
+/.quarto/

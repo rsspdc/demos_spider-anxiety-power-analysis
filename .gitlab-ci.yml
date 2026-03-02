@@ -1,0 +1,31 @@
+stages:
+  - build
+  - deploy
+
+image_build:
+  stage: build
+  image: docker.nix-community.org/nixpkgs/cachix-flakes
+  variables:
+    CACHIX_CACHE_NAME: rsspdc-site
+  before_script:
+    - cachix use "$CACHIX_CACHE_NAME"
+  script:
+    - cachix watch-exec $CACHIX_CACHE_NAME -- nix-build default.nix
+    - nix-shell --command "quarto render power-analysis.qmd --output-dir _site"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "pages"
+  artifacts:
+    paths:
+      - _site
+
+pages:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - mv ./_site ./public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == "pages"
+
